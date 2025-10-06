@@ -21,5 +21,6 @@ Shows raw data fetched from the API in a clear and user-friendly way.
 Enhances the design to make the web app clean, modern, and accessible.
 Helps users interact with data easily.
 
-<img width="1920" height="1080" alt="Screenshot (104)" src="https://github.com/user-attachments/assets/282de55d-e659-4595-887a-aadb3410f2fb" />
-<img width="1920" height="1080" alt="Screenshot (105)" src="https://github.com/user-attachments/assets/adef86d4-8602-436d-8b4a-0493d3d4ae4d" />
+<img width="1920" height="996" alt="Screenshot (104)" src="https://github.com/user-attachments/assets/427d274e-93b1-4360-8b81-4a8015398805" />
+<img width="1920" height="995" alt="Screenshot (105)" src="https://github.com/user-attachments/assets/c9cd7947-afc1-4510-97f7-cc0b8e97c6ee" />
+
