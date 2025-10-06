@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SDG13 — Weather Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <div>
+        <h1>SDG13 — Weather Prediction Web App</h1>
+        <p class="lead">Enter a city to fetch real-time weather and predict CO₂ levels.</p>
+      </div>
+    </header>
+
+    <form id="predict-form" class="controls" onsubmit="return false;">
+      <input id="city" type="text" placeholder="City,COUNTRY (e.g., Nairobi,KE)" />
+      <button id="fetchBtn" class="primary" type="button">Fetch & Predict</button>
+      <button id="clearBtn" class="ghost" type="button">Clear</button>
+    </form>
+
+    <div class="grid">
+      <div class="card">
+        <h3 id="out-title">No prediction yet</h3>
+        <div class="status" id="out-sub">Enter a city and click <strong>Fetch & Predict</strong>.</div>
+        <div id="prediction-block" style="display:none; margin-top:12px;">
+          <div class="result-metric">
+            <div>
+              <div style="font-size:13px;color:var(--muted)">Predicted value</div>
+              <div id="pred-value" style="font-size:20px;font-weight:700">—</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:13px;color:var(--muted)">Units</div>
+              <div id="pred-units">—</div>
+            </div>
+          </div>
+        </div>
+        <div id="raw" class="raw-json">No data fetched yet.</div>
+      </div>
+    </div>
+
+    <footer>
+      <div>SDG 13 — Climate Action </div>
+    </footer>
+  </div>
+
+  <script>
+    const API_URL = "/predict";
+    const cityEl = document.getElementById("city");
+    const fetchBtn = document.getElementById("fetchBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const outTitle = document.getElementById("out-title");
+    const outSub = document.getElementById("out-sub");
+    const predBlock = document.getElementById("prediction-block");
+    const predValue = document.getElementById("pred-value");
+    const predUnits = document.getElementById("pred-units");
+    const rawEl = document.getElementById("raw");
+
+    fetchBtn.addEventListener("click", runPredict);
+    clearBtn.addEventListener("click", clearAll);
+
+    async function runPredict() {
+      const city = cityEl.value.trim();
+      if (!city) {
+        alert("Please enter a city name");
+        return;
+      }
+
+      // ✅ FIX: Use backticks for template literals
+      outTitle.textContent = `Predicting for ${city}`;
+      outSub.textContent = "Fetching data...";
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ city })
+        });
+        const data = await resp.json();
+
+        if (data.error) throw new Error(data.error);
+
+        predBlock.style.display = "block";
+        predValue.textContent = (Math.round(data.prediction * 100) / 100).toString();
+        predUnits.textContent = data.units || "ppm";
+        rawEl.textContent = JSON.stringify(data.fetched || data, null, 2);
+
+        // ✅ FIX: Also use backticks here
+        outTitle.textContent = `Prediction for ${data.city || city}`;
+        outSub.textContent = "Data fetched and prediction complete.";
+      } catch (err) {
+        outTitle.textContent = "Error";
+        outSub.textContent = err.message;
+        predBlock.style.display = "none";
+      }
+    }
+
+    function clearAll() {
+      cityEl.value = "";
+      outTitle.textContent = "No prediction yet";
+      outSub.textContent = "Enter a city and click Fetch & Predict.";
+      rawEl.textContent = "No data fetched yet.";
+      predBlock.style.display = "none";
+    }
+  </script>
+</body>
+</html>
